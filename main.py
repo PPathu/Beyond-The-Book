@@ -1,14 +1,15 @@
 import gradio as gr
+from gradio import components  # Import the components
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Load all the CSV files
-college_data = pd.read_csv('college_data.csv')
-rent_data = pd.read_csv('rent_data.csv')
-cost_of_living_data = pd.read_csv('cost-of-living-database.csv')
-transportation_data = pd.read_csv('transportation.csv')
-crime_data = pd.read_csv('crime_data.csv')
-tuition_data = pd.read_csv('tution_data.csv')
+# Load all the CSV files from the 'data' folder
+college_data = pd.read_csv('data/college_data.csv')
+rent_data = pd.read_csv('data/rent_data.csv')
+cost_of_living_data = pd.read_csv('data/cost-of-living-database.csv')
+transportation_data = pd.read_csv('data/transportation.csv')
+crime_data = pd.read_csv('data/crime_data.csv')
+tuition_data = pd.read_csv('data/tution_data.csv')
 
 # Function to search for a university and visualize data
 def search_university(university_name):
@@ -43,7 +44,7 @@ def search_university(university_name):
 # Gradio interface
 iface = gr.Interface(
     fn=search_university,
-    inputs=gr.inputs.Textbox(lines=1, placeholder='Enter University Name...'),
+    inputs=components.Textbox(lines=1, placeholder='Enter University Name...'),  # Updated
     outputs='plot',
     live=False,
     title='University Data Visualization',
