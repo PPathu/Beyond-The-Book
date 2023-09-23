@@ -12,21 +12,17 @@ transportation_data = pd.read_csv('data/transportation.csv')
 crime_data = pd.read_csv('data/crime_data.csv')
 tuition_data = pd.read_csv('data/tution_data.csv')
 
-def generate_rent_plot(rent_data, university_name, axes):
-    row = rent_data.loc[rent_data['university'] == university_name].squeeze()
-    fmr_0_value = row['fmr_0']
-    fmr_1_value = row['fmr_1']
-    fmr_2_value = row['fmr_2']
-    fmr_3_value = row['fmr_3']
-    fmr_4_value = row['fmr_4']
-
-    data = [fmr_0_value, fmr_1_value, fmr_2_value, fmr_3_value, fmr_4_value]
-
-    axes[0, 0].bar(["studio", "1 bedroom", "2 bedroom", "3 bedroom", "4 bedroom"], data)
-    axes[0, 0].set_title('Rent Data')
-    axes[0, 0].set_ylabel('Monthly Rent in $')
-    
-    return axes
+def generate_rent_plot(rent_data, university_name, axs):
+    rent_row = rent_data.loc[rent_data['university'] == university_name]
+    if len(rent_row) == 1:
+        rent_row = rent_row.squeeze()
+        rent_data_values = [rent_row[col] for col in ['fmr_0', 'fmr_1', 'fmr_2', 'fmr_3', 'fmr_4']]
+        axs[0, 0].bar(["studio", "1 bedroom", "2 bedroom", "3 bedroom", "4 bedroom"], rent_data_values)
+        axs[0, 0].set_title('Rent Data')
+        axs[0, 0].set_ylabel("Monthly Rent in $")
+    else:
+        axs[0, 0].text(0.5, 0.5, 'Rent Data Not Available', ha='center', va='center')
+    return axs
 
 # Function to search for a university and visualize data
 def search_university(university_name):
@@ -36,17 +32,9 @@ def search_university(university_name):
         return "University not found in college_data!"
     
     fig, axs = plt.subplots(2, 2, figsize=(15, 10))
-    
-    # Rent Data
-    rent_row = rent_data.loc[rent_data['university'] == university_name]
-    if len(rent_row) == 1:
-        rent_row = rent_row.squeeze()
-        rent_data_values = [rent_row[col] for col in ['fmr_0', 'fmr_1', 'fmr_2', 'fmr_3', 'fmr_4']]
-        axs[0, 0].bar(["studio", "1 bedroom", "2 bedroom", "3 bedroom", "4 bedroom"], rent_data_values)
-        axs[0, 0].set_title('Rent Data')
-    else:
-        axs[0, 0].text(0.5, 0.5, 'Rent Data Not Available', ha='center', va='center')
 
+    # rent data
+    axs = generate_rent_plot(rent_data, university_name, axs)
     
     # Crime Data
     # Assuming the university's state is available in college_data under a column 'State'
