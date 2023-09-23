@@ -12,6 +12,13 @@ transportation_data = pd.read_csv('data/transportation.csv')
 crime_data = pd.read_csv('data/crime_data.csv')
 tuition_data = pd.read_csv('data/tution_data.csv')
 
+# Dictionary to map university names to image URLs (update with actual image URLs)
+university_images = {
+    "University of Wisconsin-Madison": "/Users/pathup/Desktop/beyond_the_book/images/Madison.jpg",
+    
+}
+
+
 def generate_rent_plot(rent_data, university_name, axs):
     rent_row = rent_data.loc[rent_data['university'] == university_name]
     if len(rent_row) == 1:
@@ -31,7 +38,7 @@ def search_university(university_name):
     if len(result) == 0:
         return "University not found in college_data!"
     
-    fig, axs = plt.subplots(2, 2, figsize=(15, 10))
+    fig, axs = plt.subplots(2, 2, figsize=(20, 15))
 
     # rent data
     axs = generate_rent_plot(rent_data, university_name, axs)
@@ -54,15 +61,24 @@ def search_university(university_name):
     else:
         axs[1, 1].text(0.5, 0.5, 'State Information Not Available', ha='center', va='center')
     
+  # Display the university image
+    if university_name in university_images:
+        img_url = university_images[university_name]
+        try:
+            img = Image.open(img_url)
+        except Exception as e:
+    # Display an error message when the image is not available
+            print('Image Not Available')
+    print(img)
     plt.tight_layout()
-    return fig
+    return img, fig
 
 
 # Gradio interface
 iface = gr.Interface(
     fn=search_university,
     inputs=components.Dropdown(choices=list(college_data["UniversityName"]), label="University"),  # Updated
-    outputs='plot',
+    outputs=[gr.Image(height=100, width=100), 'plot'],
     live=False,
     title='Beyond the Book',
     description='Enter the name of a university to visualize related data.'
