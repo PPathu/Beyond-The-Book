@@ -3,6 +3,7 @@ from gradio import components  # Import the components
 import pandas as pd
 import matplotlib.pyplot as plt
 from PIL import Image
+from matplotlib.backends.backend_agg import FigureCanvasAgg
 
 # Load all the CSV files from the 'data' folder
 college_data = pd.read_csv('data/college_data.csv')
@@ -57,7 +58,7 @@ def search_university(university_name):
     
     fig, axs = plt.subplots(2, 2, figsize=(20, 15))
 
-    fig, axs = plt.subplots(2, 2, figsize=(15, 10))
+    #fig, axs = plt.subplots(2, 2, figsize=(15, 10))
 
     # rent data
     axs = generate_rent_plot(rent_data, university_name, axs)
@@ -107,18 +108,28 @@ def search_university(university_name):
     else:
         axs[1, 1].text(0.5, 0.5, 'State Information Not Available', ha='center', va='center')
     
-  # Display the university image
+    plt.tight_layout()
+
+    # Convert the Matplotlib figure to a PIL Image
+    canvas = FigureCanvasAgg(fig)
+    canvas.draw()
+    s, (width, height) = canvas.print_to_buffer()
+    plot_image = Image.frombytes("RGBA", (width, height), s)
+
+    # Display the university image on top of the plot
     if university_name in university_images:
         img_url = university_images[university_name]
-        img = None
-        print(img_url)
-        try:
-            img = Image.open(img_url)
-        except Exception as e:
-    # Display an error message when the image is not available
-            print('Image Not Available')
-    plt.tight_layout()
-    return img, fig
+        logo_img = Image.open(img_url)
+        
+        # Resize the logo to a smaller size
+        logo_img = logo_img.resize((int(width/4), int((width/4) * logo_img.height / logo_img.width)))
+        
+        combined_img = Image.new("RGBA", (width, logo_img.height + plot_image.height))
+        combined_img.paste(logo_img, (int((width - logo_img.width) / 2), 0))
+        combined_img.paste(plot_image, (0, logo_img.height))
+        return combined_img
+    else:
+        return plot_image
 
 dropdown_style = {
     "description_width": "initial",
@@ -147,15 +158,15 @@ custom_css = """
 
 iface = gr.Interface(
     fn=search_university,
-    outputs=[gr.Image(height=100, width=100), 'plot'],
+    outputs=gr.Image(height=1000, width=800),  # adjust dimensions as needed
     inputs=components.Dropdown(
         choices=list(college_data["UniversityName"]), 
         label="Select a University"),
     live=False,
     title='Beyond the Book 🎓',
     description='Visualize data related to different universities. Select a university to get started.',
-    theme='default',  # Choose a theme
-    css=custom_css  # Inject custom CSS
+    theme='default',
+    css=custom_css
 )
 
 if __name__ == "__main__":
