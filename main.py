@@ -14,7 +14,7 @@ tuition_data = pd.read_csv('data/tution_data.csv')
 
 # Dictionary to map university names to image URLs (update with actual image URLs)
 university_images = {
-    "University of Wisconsin-Madison": "/Users/pathup/Desktop/beyond_the_book/images/Madison.jpg",
+    "University of Wisconsin-Madison": "images/Madison.jpg",
     
 }
 
@@ -84,12 +84,13 @@ def search_university(university_name):
   # Display the university image
     if university_name in university_images:
         img_url = university_images[university_name]
+        img = None
+        print(img_url)
         try:
             img = Image.open(img_url)
         except Exception as e:
     # Display an error message when the image is not available
             print('Image Not Available')
-    print(img)
     plt.tight_layout()
     return img, fig
 
