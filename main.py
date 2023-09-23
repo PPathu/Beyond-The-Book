@@ -55,14 +55,14 @@ def search_university(university_name):
         axs[1, 1].text(0.5, 0.5, 'State Information Not Available', ha='center', va='center')
     
     plt.tight_layout()
-    return fig
+    return fig, Image.open("images/Madison.jpg") 
 
 
 # Gradio interface
 iface = gr.Interface(
     fn=search_university,
     inputs=components.Dropdown(choices=list(college_data["UniversityName"]), label="University"),  # Updated
-    outputs='plot',
+    outputs=[gr.Plot(show_label=False), gr.Image(show_label=False, height=100, width="100")],
     live=False,
     title='Beyond the Book',
     description='Enter the name of a university to visualize related data.'
