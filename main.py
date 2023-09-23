@@ -36,6 +36,21 @@ def search_university(university_name):
     # rent data
     axs = generate_rent_plot(rent_data, university_name, axs)
     
+    # Tuition Data
+    tuition_row = tuition_data.loc[tuition_data['INSTNM'] == university_name]
+    if len(tuition_row) == 1:
+        tuition_row = tuition_row.squeeze()
+        tuition_in = tuition_row['TUITIONFEE_IN']
+        tuition_out = tuition_row['TUITIONFEE_OUT']
+        axs[0, 1].bar(['In-State', 'Out-of-State'], [tuition_in, tuition_out])
+        axs[0, 1].set_title('Tuition Fees')
+        axs[0, 1].set_ylabel('Cost ($)')
+        for i, v in enumerate([tuition_in, tuition_out]):
+            axs[0, 1].text(i, v + 500, "$" + str(v), color='black', ha='center')
+    else:
+        axs[0, 1].text(0.5, 0.5, 'Tuition Data Not Available', ha='center', va='center')
+
+
     # Crime Data
     # Assuming the university's state is available in college_data under a column 'State'
     state = result.squeeze().get('STATE', None)
