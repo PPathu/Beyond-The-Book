@@ -158,7 +158,7 @@ custom_css = """
 
 iface = gr.Interface(
     fn=search_university,
-    outputs=gr.Image(height=1000, width=800),  # adjust dimensions as needed
+    outputs=gr.Image(width=800),  # adjust dimensions as needed
     inputs=components.Dropdown(
         choices=list(college_data["UniversityName"]), 
         label="Select a University"),
