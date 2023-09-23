@@ -14,15 +14,24 @@ tuition_data = pd.read_csv('data/tution_data.csv')
 
 # Function to search for a university and visualize data
 def search_university(university_name):
-    result = college_data[college_data['University_Name'].str.contains(university_name, case=False, na=False)]
-    
+    result = college_data.loc[college_data['UniversityName'] == university_name]
     if len(result) == 0:
         return "University not found!"
     
     # Create some example plots (replace this with your actual visualizations)
     fig, axs = plt.subplots(2, 3, figsize=(15, 10))
     
-    axs[0, 0].bar(rent_data['university'], rent_data['fmr_0'])
+    row = rent_data.loc[rent_data['university'] == university_name].squeeze()
+
+    fmr_0_value = row['fmr_0']
+    fmr_1_value = row['fmr_1']
+    fmr_2_value = row['fmr_2']
+    fmr_3_value = row['fmr_3']
+    fmr_4_value = row['fmr_4']
+
+    data = [fmr_0_value, fmr_1_value, fmr_2_value, fmr_3_value, fmr_4_value]
+
+    axs[0, 0].bar(["studio", "1 bedroom", "2 bedroom", "3 bedroom", "4 bedroom"], data)
     axs[0, 0].set_title('Rent Data')
     
     """
@@ -47,10 +56,10 @@ def search_university(university_name):
 # Gradio interface
 iface = gr.Interface(
     fn=search_university,
-    inputs=components.Dropdown(choices=list(college_data["UniversityName"])),  # Updated
+    inputs=components.Dropdown(choices=list(college_data["UniversityName"]), label="University"),  # Updated
     outputs='plot',
     live=False,
-    title='University Data Visualization',
+    title='Beyond the Book',
     description='Enter the name of a university to visualize related data.'
 )
 
