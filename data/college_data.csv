@@ -1,15 +1,15 @@
-UniversityName,Private,Apps,Accept,Enroll,Top10perc,Top25perc,RoomCost,BookCost,PersonalSpending,GradRate
-Indiana University-Bloomington,No,16587,13243,5873,25,72,3990,600,2000,68
-Michigan State University,No,18114,15096,6180,23,57,3734,504,600,71
-Northwestern University,Yes,12289,5200,1902,85,98,5520,759,1585,92
-Ohio State University,No,11023,8298,3183,21,54,4095,550,2300,64
-Pennsylvania State University. Main Campus,No,19315,10344,3450,48,93,4060,512,2394,63
-Purdue University,No,21804,18744,5874,29,60,3990,570,1060,67
-Rutgers at New Brunswick,No,48094,26330,4520,36,79,4748,690,2009,77
-University of Illinois-Urbana-Champaign,No,14939,11652,5705,52,88,4574,500,1982,81
-University of Iowa,No,25729,22127,5089,93,180,3762,950,3078,71
-University of Maryland,No,14292,10315,3409,22,53,5146,550,1550,63
-University of Michigan,No,19152,12940,4893,66,92,4659,476,1600,87
-University of Minnesota,No,11054,6397,3524,26,55,3744,714,2910,45
-University of Nebraska,No,6277,6003,3526,33,63,3145,500,2070,53
-University of Wisconsin-Madison,No,14901,10932,4631,36,80,4290,535,1545,72
+UniversityName,Private,Apps,Accept,Enroll,Top10perc,Top25perc,RoomCost,BookCost,PersonalSpending,GradRate,TUITIONFEE_IN,TUITIONFEE_OUT,STATE
+Indiana University-Bloomington,No,16587,13243,5873,25,72,3990,600,2000,68,11333,38352,IN
+Michigan State University,No,18114,15096,6180,23,57,3734,504,600,71,14750,40562,MI
+Northwestern University,Yes,12289,5200,1902,85,98,5520,759,1585,92,60768,60768,IL
+Ohio State University,No,11023,8298,3183,21,54,4095,550,2300,64,11936,35019,OH
+Pennsylvania State University. Main Campus,No,19315,10344,3450,48,93,4060,512,2394,63,18898,36476,PA
+Purdue University,No,21804,18744,5874,29,60,3990,570,1060,67,9992,28794,IN
+Rutgers at New Brunswick,No,48094,26330,4520,36,79,4748,690,2009,77,15804,33005,NJ
+University of Illinois-Urbana-Champaign,No,14939,11652,5705,52,88,4574,500,1982,81,15442,32892,IL
+University of Iowa,No,25729,22127,5089,93,180,3762,950,3078,71,9942,31905,IA
+University of Maryland,No,14292,10315,3409,22,53,5146,550,1550,63,10955,38636,MD
+University of Michigan,No,19152,12940,4893,66,92,4659,476,1600,87,16178,53232,MI
+University of Minnesota,No,11054,6397,3524,26,55,3744,714,2910,45,15254,33818,MN
+University of Nebraska,No,6277,6003,3526,33,63,3145,500,2070,53,9872,27002,NE
+University of Wisconsin-Madison,No,14901,10932,4631,36,80,4290,535,1545,72,10720,38608,WI
