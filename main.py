@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 # Load all the CSV files from the 'data' folder
 college_data = pd.read_csv('data/college_data.csv')
-rent_data = pd.read_csv('data/rent_data.csv')
+rent_data = pd.read_csv('data/big_10_rent.csv')
 cost_of_living_data = pd.read_csv('data/cost-of-living-database.csv')
 transportation_data = pd.read_csv('data/transportation.csv')
 crime_data = pd.read_csv('data/crime_data.csv')
@@ -13,7 +13,8 @@ tuition_data = pd.read_csv('data/tution_data.csv')
 
 # Function to search for a university and visualize data
 def search_university(university_name):
-    result = college_data[college_data['University Name:'].str.contains(university_name, case=False, na=False)]
+    result = college_data[college_data["UniversityName"].str.contains(university_name, case=False, na=False)]
+    print(result)
     
     if len(result) == 0:
         return "University not found!"
@@ -21,9 +22,10 @@ def search_university(university_name):
     # Create some example plots (replace this with your actual visualizations)
     fig, axs = plt.subplots(2, 3, figsize=(15, 10))
     
-    axs[0, 0].bar(rent_data['Location'], rent_data['Rent'])
+    axs[0, 0].bar(rent_data['university'], rent_data['fmr_0'])
     axs[0, 0].set_title('Rent Data')
     
+    """
     axs[0, 1].bar(cost_of_living_data['Location'], cost_of_living_data['Cost'])
     axs[0, 1].set_title('Cost of Living')
     
@@ -38,13 +40,14 @@ def search_university(university_name):
     
     axs[1, 2].axis('off')  # Hide the last plot
     
+    """
     plt.tight_layout()
     return fig
 
 # Gradio interface
 iface = gr.Interface(
     fn=search_university,
-    inputs=components.Textbox(lines=1, placeholder='University Name'),  # Updated
+    inputs=components.Dropdown(choices=list(college_data["UniversityName"])),  # Updated
     outputs='plot',
     live=False,
     title='Beyond the Books',
