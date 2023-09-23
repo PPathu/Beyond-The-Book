@@ -13,7 +13,7 @@ tuition_data = pd.read_csv('data/tution_data.csv')
 
 # Function to search for a university and visualize data
 def search_university(university_name):
-    result = college_data[college_data['University_Name'].str.contains(university_name, case=False, na=False)]
+    result = college_data[college_data['University Name:'].str.contains(university_name, case=False, na=False)]
     
     if len(result) == 0:
         return "University not found!"
@@ -44,11 +44,10 @@ def search_university(university_name):
 # Gradio interface
 iface = gr.Interface(
     fn=search_university,
-    inputs=components.Textbox(lines=1, placeholder='Enter University Name...'),  # Updated
+    inputs=components.Textbox(lines=1, placeholder='University Name'),  # Updated
     outputs='plot',
     live=False,
-    title='University Data Visualization',
-    description='Enter the name of a university to visualize related data.'
+    title='Beyond the Books',
 )
 
 if __name__ == "__main__":
