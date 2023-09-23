@@ -76,6 +76,18 @@ def search_university(university_name):
     else:
         axs[0, 1].text(0.5, 0.5, 'Tuition Data Not Available', ha='center', va='center')
 
+    # Spending Data 
+    room_cost = result['RoomCost'].values[0]
+    book_cost = result['BookCost'].values[0]
+    personal_spending = result['PersonalSpending'].values[0]
+    total_spending = room_cost + book_cost + personal_spending
+
+    sizes = [room_cost, book_cost, personal_spending]
+    labels = [f'Room Cost: ${room_cost}', f'Book Cost: ${book_cost}', f'Personal Spending: ${personal_spending}']
+    colors = ['lightpink', 'lightblue', 'lightgreen']
+    axs[1, 0].pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=140)
+    axs[1, 0].set_title('Distribution of Costs')
+
 
     # Crime Data
     # Assuming the university's state is available in college_data under a column 'State'
