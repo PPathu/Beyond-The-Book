@@ -21,10 +21,11 @@ university_images = {
 
 def generate_rent_plot(rent_data, university_name, axs):
     rent_row = rent_data.loc[rent_data['university'] == university_name]
+    fancy_colors = ['orange', 'red', 'darkred', 'orangered']
     if len(rent_row) == 1:
         rent_row = rent_row.squeeze()
         rent_data_values = [rent_row[col] for col in ['fmr_0', 'fmr_1', 'fmr_2', 'fmr_3', 'fmr_4']]
-        axs[0, 0].bar(["studio", "1 bedroom", "2 bedroom", "3 bedroom", "4 bedroom"], rent_data_values)
+        axs[0, 0].bar(["studio", "1 bedroom", "2 bedroom", "3 bedroom", "4 bedroom"], rent_data_values, color=fancy_colors[0])
         axs[0, 0].set_title('Rent Data')
         axs[0, 0].set_ylabel("Monthly Rent in $")
     else:
@@ -33,6 +34,8 @@ def generate_rent_plot(rent_data, university_name, axs):
 
 # Function to search for a university and visualize data
 def search_university(university_name):
+    fancy_colors = ['orange', 'red', 'darkred', 'orangered']
+
     result = college_data.loc[college_data['UniversityName'] == university_name]
     
     if len(result) == 0:
@@ -40,9 +43,26 @@ def search_university(university_name):
     
     fig, axs = plt.subplots(2, 2, figsize=(20, 15))
 
+    fig, axs = plt.subplots(2, 2, figsize=(15, 10))
+
     # rent data
     axs = generate_rent_plot(rent_data, university_name, axs)
     
+    # Tuition Data
+    tuition_row = tuition_data.loc[tuition_data['INSTNM'] == university_name]
+    if len(tuition_row) == 1:
+        tuition_row = tuition_row.squeeze()
+        tuition_in = tuition_row['TUITIONFEE_IN']
+        tuition_out = tuition_row['TUITIONFEE_OUT']
+        axs[0, 1].bar(['In-State', 'Out-of-State'], [tuition_in, tuition_out], color=fancy_colors[1])
+        axs[0, 1].set_title('Tuition Fees')
+        axs[0, 1].set_ylabel('Cost ($)')
+        for i, v in enumerate([tuition_in, tuition_out]):
+            axs[0, 1].text(i, v + 500, "$" + str(v), color='black', ha='center')
+    else:
+        axs[0, 1].text(0.5, 0.5, 'Tuition Data Not Available', ha='center', va='center')
+
+
     # Crime Data
     # Assuming the university's state is available in college_data under a column 'State'
     state = result.squeeze().get('STATE', None)
@@ -52,7 +72,7 @@ def search_university(university_name):
             crime_row = crime_row.squeeze()
             years = [str(year) for year in range(2011, 2021)]
             crime_rates = [crime_row[year] for year in years]
-            axs[1, 1].plot(years, crime_rates, marker='o')
+            axs[1, 1].plot(years, crime_rates, marker='o', color=fancy_colors[2])
             axs[1, 1].set_title('Violent Crime Rates per 100,000 inhabitants (2011–2020)')
             axs[1, 1].set_xlabel('Year')
             axs[1, 1].set_ylabel('Crime Rate')
@@ -73,15 +93,42 @@ def search_university(university_name):
     plt.tight_layout()
     return img, fig
 
+dropdown_style = {
+    "description_width": "initial",
+    "border": "1px solid #E2E2E2",
+    "border-radius": "10px",
+    "padding": "10px",
+}
 
-# Gradio interface
+# Inject some custom CSS for better styling
+custom_css = """
+    .gradio h2 {
+        font-size: 1.5em;
+        color: darkblue;
+        margin-bottom: 0.5em;
+    }
+    .gr-interface-description {
+        font-style: italic;
+        margin-top: 0;
+    }
+    .gr-dropdown {
+        border: 1px solid #E2E2E2 !important;
+        border-radius: 10px !important;
+        padding: 10px !important;
+    }
+"""
+
 iface = gr.Interface(
     fn=search_university,
-    inputs=components.Dropdown(choices=list(college_data["UniversityName"]), label="University"),  # Updated
     outputs=[gr.Image(height=100, width=100), 'plot'],
+    inputs=components.Dropdown(
+        choices=list(college_data["UniversityName"]), 
+        label="Select a University"),
     live=False,
-    title='Beyond the Book',
-    description='Enter the name of a university to visualize related data.'
+    title='Beyond the Book 🎓',
+    description='Visualize data related to different universities. Select a university to get started.',
+    theme='default',  # Choose a theme
+    css=custom_css  # Inject custom CSS
 )
 
 if __name__ == "__main__":
