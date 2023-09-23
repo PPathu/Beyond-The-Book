@@ -17,6 +17,11 @@ state_abbreviations = {
 }
 
 def clean_food_cost(df):
+    df['cost'] = df['Average monthly cost of groceries per person']
+    df['cost'] = df['cost'].replace('[\$,]', '', regex=True).astype(float)
+    df.rename(columns={"State": "state"}, inplace=True)
+    df['state'] = df['state'].map(state_abbreviations)
+    df.drop(["Average monthly cost of groceries per person", "City analyzed (population)", "Rank"], axis=1, inplace=True)
     return df
 
 if __name__ == "__main__":
