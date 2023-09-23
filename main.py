@@ -15,6 +15,20 @@ tuition_data = pd.read_csv('data/tution_data.csv')
 # Dictionary to map university names to image URLs (update with actual image URLs)
 university_images = {
     "University of Wisconsin-Madison": "images/Madison.jpg",
+    "Ohio State University": "images/ohio-state-buckeyes4939.jpg",
+    "Pennsylvania State University. Main Campus": "images/penn-state-shield.jpg",
+    "Northwestern University": "images/Northwestern-Wildcats-Logo-1981.png",
+    "Michigan State University": "images/Michigan State University.jpg",
+    "Indiana University-Bloomington": "images/trident-tab-promo.jpg",
+    "Purdue University": "images/emblem-Purdue-University.jpg",
+    "Rutgers at New Brunswick": "images/rutgers.png",
+    "University of Illinois-Urbana-Champaign": "images/shit state.jpg",
+    "University of Iowa": "images/Tigerhawk-gold on black@2x.png",
+    "University of Maryland": "images/Maryland-Terrapins-Logo.jpg",
+    "University of Michigan": "images/U-M_Logo-Hex.png",
+    "University of Minnesota": "images/University of Minnesota.jpg",
+    "University of Nebraska": "images/University of Nebraska.jpg",
+       
     
 }
 
