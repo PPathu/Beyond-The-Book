@@ -14,7 +14,7 @@ transportation_data = pd.read_csv('data/transportation.csv')
 crime_data = pd.read_csv('data/crime_data.csv')
 tuition_data = pd.read_csv('data/tution_data.csv')
 
-OPEN_AI_API_KEY = "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"
+OPEN_AI_API_KEY = "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"
 openai.api_key = OPEN_AI_API_KEY
 
 # Dictionary to map university names to image URLs (update with actual image URLs)
@@ -210,7 +210,10 @@ with gr.Blocks() as iface:
                     # Get a response from the Chat GPT API
                     response = openai.ChatCompletion.create(
                         model="gpt-3.5-turbo",
-                        messages=messages
+                        messages=messages,
+                        stop=None,
+                        n=1,
+                        max_tokens=100
                     )
                     
                     bot_message = response.choices[0].message['content'].strip()
