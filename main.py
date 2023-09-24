@@ -85,9 +85,9 @@ def search_university(university_name):
 
     sizes = [room_cost, book_cost, personal_spending]
     labels = [f'Room Cost: ${room_cost}', f'Book Cost: ${book_cost}', f'Personal Spending: ${personal_spending}']
-    colors = ['lightpink', 'lightblue', 'lightgreen']
+    colors = ['#FFDAB9', '#FFA500', '#FF6B6B']
     axs[1, 0].pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=140)
-    axs[1, 0].set_title('Distribution of Costs')
+    axs[1, 0].set_title('Distribution of Expenses for College Students')
 
 
     # Crime Data
