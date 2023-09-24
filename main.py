@@ -140,7 +140,7 @@ custom_css = """
     }
 """
 
-placeholder_image_url = "https://miro.medium.com/v2/resize:fit:2000/format:webp/1*MW9c_tBvDwobDfSAqeR45w.png"
+placeholder_image_url = "https://example.com/placeholder.jpg"
 
 def get_university_image_url(university_name):
     # Get the university image URL from the dictionary or use the placeholder image URL
@@ -177,7 +177,7 @@ with gradio.Blocks() as iface:
                 gradio.Interface(
                     fn=combined_fn,
                     inputs=university_input,
-                    outputs=[components.Image(width=200, height=200, show_label=False, show_download_button=False), rent_output, tuition_output, spending_output, crime_output],  # Add an Image component for the university image
+                    outputs=[components.Image(height=200, show_label=False, show_download_button=False), rent_output, tuition_output, spending_output, crime_output],  # Add an Image component for the university image
                     live=False,
                     theme='default',
                     css=custom_css,
