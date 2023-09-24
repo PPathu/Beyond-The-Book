@@ -140,6 +140,13 @@ custom_css = """
     }
 """
 
+placeholder_image_url = "https://miro.medium.com/v2/resize:fit:2000/format:webp/1*MW9c_tBvDwobDfSAqeR45w.png"
+
+def get_university_image_url(university_name):
+    # Get the university image URL from the dictionary or use the placeholder image URL
+    return university_images.get(university_name, placeholder_image_url)
+
+
 with gradio.Blocks() as iface:
     with components.Column():
         components.HTML(
@@ -161,12 +168,16 @@ with gradio.Blocks() as iface:
                     tuition_img = generate_tuition_plot(university_name)
                     spending_img = generate_spending_plot(university_name)
                     crime_img = generate_crime_plot(university_name)
+                     # Get the university image URL
+                    university_image_url = get_university_image_url(university_name)
                     
-                    return rent_img, tuition_img, spending_img, crime_img 
+                    
+                    return university_image_url, rent_img, tuition_img, spending_img, crime_img,   # Include university image URL 
+                        
                 gradio.Interface(
                     fn=combined_fn,
                     inputs=university_input,
-                    outputs=[rent_output, tuition_output, spending_output, crime_output],
+                    outputs=[components.Image(width=200, height=200, show_label=False, show_download_button=False), rent_output, tuition_output, spending_output, crime_output],  # Add an Image component for the university image
                     live=False,
                     theme='default',
                     css=custom_css,
