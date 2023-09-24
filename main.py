@@ -193,8 +193,8 @@ with gr.Blocks() as iface:
                 )
 
             with gr.Column():
-                chatbot = components.Chatbot(show_label=False)
-                msg = components.Textbox()
+                chatbot = components.Chatbot(show_label=False, scale=2)
+                msg = components.Textbox(label="Chat Box")
                 clear = components.ClearButton([msg, chatbot])
                 def respond(message, chat_history):
                     # Initialize with a system message
