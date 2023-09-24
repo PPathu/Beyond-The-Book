@@ -122,7 +122,7 @@ def search_university(university_name):
         logo_img = Image.open(img_url)
         
         # Resize the logo to a smaller size
-        logo_img = logo_img.resize((int(width/4), int((width/4) * logo_img.height / logo_img.width)))
+        logo_img = logo_img.resize((int(width/3), int((width/3) * logo_img.height / logo_img.width)))
         
         combined_img = Image.new("RGBA", (width, logo_img.height + plot_image.height))
         combined_img.paste(logo_img, (int((width - logo_img.width) / 2), 0))
