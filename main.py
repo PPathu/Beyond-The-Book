@@ -1,5 +1,4 @@
-import gradio as gr
-from gradio import components  # Import the components
+from gradio import components, gradio
 import pandas as pd
 import matplotlib.pyplot as plt
 from PIL import Image
@@ -7,6 +6,7 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg
 import openai
 from dotenv import load_dotenv
 import os
+from io import BytesIO
 
 # Load all the CSV files from the 'data' folder
 college_data = pd.read_csv('data/college_data.csv')
@@ -39,21 +39,81 @@ university_images = {
     
 }
 
+def fig_to_img(fig):
+    """Converts a matplotlib figure object into an image in memory."""
+    buf = BytesIO()
+    fig.savefig(buf, format='png', bbox_inches='tight', pad_inches=0.5)
+    buf.seek(0)
+    img = Image.open(buf)
+    return img
 
-def generate_rent_plot(rent_data, university_name, axs):
-    rent_row = rent_data.loc[rent_data['university'] == university_name]
+def generate_tuition_plot(university_name):
     fancy_colors = ['orange', 'red', 'darkred', 'orangered']
+    fig, ax = plt.subplots(figsize=(5, 4))
+    
+    tuition_row = tuition_data.loc[tuition_data['INSTNM'] == university_name]
+    if len(tuition_row) == 1:
+        tuition_row = tuition_row.squeeze()
+        tuition_in = tuition_row['TUITIONFEE_IN']
+        tuition_out = tuition_row['TUITIONFEE_OUT']
+        ax.bar(['In-State', 'Out-of-State'], [tuition_in, tuition_out], color=fancy_colors[1])
+        ax.set_title('Tuition Fees')
+        ax.set_ylabel('Cost ($)')
+    else:
+        ax.text(0.5, 0.5, 'Tuition Data Not Available', ha='center', va='center')
+    return fig_to_img(fig)
+
+def generate_spending_plot(university_name):
+    fig, ax = plt.subplots(figsize=(5, 4))
+    
+    result = college_data.loc[college_data['UniversityName'] == university_name]
+    room_cost = result['RoomCost'].values[0]
+    book_cost = result['BookCost'].values[0]
+    personal_spending = result['PersonalSpending'].values[0]
+    
+    sizes = [room_cost, book_cost, personal_spending]
+    labels = [f'Room Cost: ${room_cost}', f'Book Cost: ${book_cost}', f'Personal Spending: ${personal_spending}']
+    colors = ['#FFDAB9', '#FFA500', '#FF6B6B']
+    ax.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=140)
+    ax.set_title('Distribution of Expenses for College Students')
+    return fig_to_img(fig)
+
+def generate_crime_plot(university_name):
+    fancy_colors = ['orange', 'red', 'darkred', 'orangered']
+    fig, ax = plt.subplots(figsize=(5, 4))
+    
+    result = college_data.loc[college_data['UniversityName'] == university_name]
+    state = result.squeeze().get('STATE', None)
+    if state:
+        crime_row = crime_data.loc[crime_data['STATE'] == state]
+        if len(crime_row) == 1:
+            crime_row = crime_row.squeeze()
+            years = [str(year) for year in range(2011, 2021)]
+            crime_rates = [crime_row[year] for year in years]
+            ax.plot(years, crime_rates, marker='o', color=fancy_colors[2])
+            ax.set_title('Violent Crime Rates per 100,000 inhabitants (2011–2020)')
+            ax.set_xlabel('Year')
+            ax.set_ylabel('Crime Rate')
+        else:
+            ax.text(0.5, 0.5, 'Crime Data Not Available', ha='center', va='center')
+    else:
+        ax.text(0.5, 0.5, 'State Information Not Available', ha='center', va='center')
+    return fig_to_img(fig)
+
+def generate_rent_plot(university_name):
+    fancy_colors = ['orange', 'red', 'darkred', 'orangered']
+    fig, ax = plt.subplots(figsize=(5, 4))
+    rent_row = rent_data.loc[rent_data['university'] == university_name]
     if len(rent_row) == 1:
         rent_row = rent_row.squeeze()
         rent_data_values = [rent_row[col] for col in ['fmr_0', 'fmr_1', 'fmr_2', 'fmr_3', 'fmr_4']]
-        axs[0].bar(["studio", "1 bedroom", "2 bedroom", "3 bedroom", "4 bedroom"], rent_data_values, color=fancy_colors[0])
-        axs[0].set_title('Rent Data')
-        axs[0].set_ylabel("Monthly Rent in $")
+        ax.bar(["studio", "1 bedroom", "2 bedroom", "3 bedroom", "4 bedroom"], rent_data_values, color=fancy_colors[0])
+        ax.set_title('Rent Data')
+        ax.set_ylabel("Monthly Rent in $")
     else:
-        axs[0].text(0.5, 0.5, 'Rent Data Not Available', ha='center', va='center')
-    return axs
-
-# Function to search for a university and visualize data
+        ax.text(0.5, 0.5, 'Rent Data Not Available', ha='center', va='center')
+    return fig_to_img(fig)
+    # Function to search for a university and visualize data
 def search_university(university_name):
     fancy_colors = ['orange', 'red', 'darkred', 'orangered']
 
@@ -162,28 +222,39 @@ custom_css = """
     }
 """
 
-with gr.Blocks() as iface:
-    with gr.Column():
-        gr.HTML(
+with gradio.Blocks() as iface:
+    with components.Column():
+        components.HTML(
             """
             <h1 style="text-align:center; font-size:55px;">Beyond The Book 📚</h1>
             """
         )
-        with gr.Row():
-            with gr.Column():
-                gr.Interface(
-                    fn=search_university,
-                    outputs=gr.Image(width=800, show_label=False, show_download_button=False),  # adjust dimensions as needed
-                    inputs=components.Dropdown(
-                        choices=list(college_data["UniversityName"]), 
-                        label="Select a University"),
+        with components.Row():
+            with components.Column():
+                university_input = components.Dropdown(choices=list(college_data["UniversityName"]), label="Select a University")
+                
+                rent_output = components.Image(width=800, show_label=False, show_download_button=False)
+                tuition_output = components.Image(width=800, show_label=False, show_download_button=False)
+                spending_output = components.Image(width=800, show_label=False, show_download_button=False)
+                crime_output = components.Image(width=800, show_label=False, show_download_button=False)
+                
+                def combined_fn(university_name):
+                    rent_img = generate_rent_plot(university_name)
+                    tuition_img = generate_tuition_plot(university_name)
+                    spending_img = generate_spending_plot(university_name)
+                    crime_img = generate_crime_plot(university_name)
+                    
+                    return rent_img, tuition_img, spending_img, crime_img 
+                gradio.Interface(
+                    fn=combined_fn,
+                    inputs=university_input,
+                    outputs=[rent_output, tuition_output, spending_output, crime_output],
                     live=False,
                     theme='default',
                     css=custom_css,
                     allow_flagging="never"
                 )
-
-            with gr.Column():
+            with components.Column():
                 chatbot = components.Chatbot(show_label=False, scale=2)
                 msg = components.Textbox(label="Chat Box")
                 clear = components.ClearButton([msg, chatbot])
