@@ -4,6 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from PIL import Image
 from matplotlib.backends.backend_agg import FigureCanvasAgg
+import openai
 
 # Load all the CSV files from the 'data' folder
 college_data = pd.read_csv('data/college_data.csv')
@@ -12,6 +13,9 @@ cost_of_living_data = pd.read_csv('data/cost-of-living-database.csv')
 transportation_data = pd.read_csv('data/transportation.csv')
 crime_data = pd.read_csv('data/crime_data.csv')
 tuition_data = pd.read_csv('data/tution_data.csv')
+
+OPEN_AI_API_KEY = "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"
+openai.api_key = OPEN_AI_API_KEY
 
 # Dictionary to map university names to image URLs (update with actual image URLs)
 university_images = {
@@ -187,7 +191,33 @@ with gr.Blocks() as iface:
                 )
 
             with gr.Column():
-                components.Chatbot(show_label=False)
+                chatbot = components.Chatbot(show_label=False)
+                msg = components.Textbox()
+                clear = components.ClearButton([msg, chatbot])
+                def respond(message, chat_history):
+                    # Initialize with a system message
+                    messages = [{"role": "system", "content": "You are a helpful assistant."}]
+                    
+                    # Append user's and assistant's previous messages
+                    for m in chat_history:
+                        user_msg, assistant_msg = m
+                        messages.append({"role": "user", "content": user_msg})
+                        messages.append({"role": "assistant", "content": assistant_msg})
+                        
+                    # Append the current user's message
+                    messages.append({"role": "user", "content": message})
+                    
+                    # Get a response from the Chat GPT API
+                    response = openai.ChatCompletion.create(
+                        model="gpt-3.5-turbo",
+                        messages=messages
+                    )
+                    
+                    bot_message = response.choices[0].message['content'].strip()
+                    chat_history.append((message, bot_message))
+                    return "", chat_history
+                msg.submit(respond, [msg, chatbot], [msg, chatbot])
+
 
 """
 iface = gr.Interface(
