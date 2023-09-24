@@ -166,7 +166,7 @@ with gr.Blocks() as iface:
     with gr.Column():
         gr.HTML(
             """
-            <h1 style="text-align:center">Beyond the Book</h1>
+            <h1 style="text-align:center; font-size:55px;">Beyond The Book 📚</h1>
             """
         )
         with gr.Row():
