@@ -14,7 +14,7 @@ transportation_data = pd.read_csv('data/transportation.csv')
 crime_data = pd.read_csv('data/crime_data.csv')
 tuition_data = pd.read_csv('data/tution_data.csv')
 
-OPEN_AI_API_KEY = "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"
+OPEN_AI_API_KEY = "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"
 openai.api_key = OPEN_AI_API_KEY
 
 # Dictionary to map university names to image URLs (update with actual image URLs)
