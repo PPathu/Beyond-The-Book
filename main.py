@@ -158,7 +158,7 @@ custom_css = """
 
 iface = gr.Interface(
     fn=search_university,
-    outputs=gr.Image(width=800),  # adjust dimensions as needed
+    outputs=gr.Image(width=800, show_label=False, show_download_button=False),  # adjust dimensions as needed
     inputs=components.Dropdown(
         choices=list(college_data["UniversityName"]), 
         label="Select a University"),
@@ -166,7 +166,8 @@ iface = gr.Interface(
     title='Beyond the Book 🎓',
     description='Visualize data related to different universities. Select a university to get started.',
     theme='default',
-    css=custom_css
+    css=custom_css,
+    allow_flagging="never"
 )
 
 if __name__ == "__main__":
