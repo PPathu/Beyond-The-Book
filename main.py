@@ -156,6 +156,40 @@ custom_css = """
     }
 """
 
+with gr.Blocks() as iface:
+    with gr.Column():
+        gr.HTML(
+            """
+            <h1 style="text-align:center">Beyond the Book</h1>
+            """
+        )
+        with gr.Row():
+            with gr.Column():
+                """
+                university = components.Dropdown(
+                    choices=list(college_data["UniversityName"]), 
+                    label="Select a University"
+                )
+                submit_button = components.Button()
+                """
+                gr.Interface(
+                    fn=search_university,
+                    outputs=gr.Image(width=800, show_label=False, show_download_button=False),  # adjust dimensions as needed
+                    inputs=components.Dropdown(
+                        choices=list(college_data["UniversityName"]), 
+                        label="Select a University"),
+                    live=False,
+                    #title='Beyond the Book 🎓',
+                    #description='Visualize data related to different universities. Select a university to get started.',
+                    theme='default',
+                    css=custom_css,
+                    allow_flagging="never"
+                )
+
+            with gr.Column():
+                components.Chatbot(show_label=False)
+
+"""
 iface = gr.Interface(
     fn=search_university,
     outputs=gr.Image(width=800, show_label=False, show_download_button=False),  # adjust dimensions as needed
@@ -169,6 +203,7 @@ iface = gr.Interface(
     css=custom_css,
     allow_flagging="never"
 )
+"""
 
 if __name__ == "__main__":
     iface.launch()
