@@ -46,11 +46,11 @@ def generate_rent_plot(rent_data, university_name, axs):
     if len(rent_row) == 1:
         rent_row = rent_row.squeeze()
         rent_data_values = [rent_row[col] for col in ['fmr_0', 'fmr_1', 'fmr_2', 'fmr_3', 'fmr_4']]
-        axs[0, 0].bar(["studio", "1 bedroom", "2 bedroom", "3 bedroom", "4 bedroom"], rent_data_values, color=fancy_colors[0])
-        axs[0, 0].set_title('Rent Data')
-        axs[0, 0].set_ylabel("Monthly Rent in $")
+        axs[0].bar(["studio", "1 bedroom", "2 bedroom", "3 bedroom", "4 bedroom"], rent_data_values, color=fancy_colors[0])
+        axs[0].set_title('Rent Data')
+        axs[0].set_ylabel("Monthly Rent in $")
     else:
-        axs[0, 0].text(0.5, 0.5, 'Rent Data Not Available', ha='center', va='center')
+        axs[0].text(0.5, 0.5, 'Rent Data Not Available', ha='center', va='center')
     return axs
 
 # Function to search for a university and visualize data
@@ -62,7 +62,7 @@ def search_university(university_name):
     if len(result) == 0:
         return "University not found in college_data!"
     
-    fig, axs = plt.subplots(2, 2, figsize=(20, 15))
+    fig, axs = plt.subplots(4, 1, figsize=(20, 15))
 
     #fig, axs = plt.subplots(2, 2, figsize=(15, 10))
 
@@ -75,13 +75,13 @@ def search_university(university_name):
         tuition_row = tuition_row.squeeze()
         tuition_in = tuition_row['TUITIONFEE_IN']
         tuition_out = tuition_row['TUITIONFEE_OUT']
-        axs[0, 1].bar(['In-State', 'Out-of-State'], [tuition_in, tuition_out], color=fancy_colors[1])
-        axs[0, 1].set_title('Tuition Fees')
-        axs[0, 1].set_ylabel('Cost ($)')
+        axs[1].bar(['In-State', 'Out-of-State'], [tuition_in, tuition_out], color=fancy_colors[1])
+        axs[1].set_title('Tuition Fees')
+        axs[1].set_ylabel('Cost ($)')
         for i, v in enumerate([tuition_in, tuition_out]):
-            axs[0, 1].text(i, v + 500, "$" + str(v), color='black', ha='center')
+            axs[1].text(i, v + 500, "$" + str(v), color='black', ha='center')
     else:
-        axs[0, 1].text(0.5, 0.5, 'Tuition Data Not Available', ha='center', va='center')
+        axs[1].text(0.5, 0.5, 'Tuition Data Not Available', ha='center', va='center')
 
     # Spending Data 
     room_cost = result['RoomCost'].values[0]
@@ -92,8 +92,8 @@ def search_university(university_name):
     sizes = [room_cost, book_cost, personal_spending]
     labels = [f'Room Cost: ${room_cost}', f'Book Cost: ${book_cost}', f'Personal Spending: ${personal_spending}']
     colors = ['#FFDAB9', '#FFA500', '#FF6B6B']
-    axs[1, 0].pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=140)
-    axs[1, 0].set_title('Distribution of Expenses for College Students')
+    axs[2].pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=140)
+    axs[2].set_title('Distribution of Expenses for College Students')
 
 
     # Crime Data
@@ -105,14 +105,14 @@ def search_university(university_name):
             crime_row = crime_row.squeeze()
             years = [str(year) for year in range(2011, 2021)]
             crime_rates = [crime_row[year] for year in years]
-            axs[1, 1].plot(years, crime_rates, marker='o', color=fancy_colors[2])
-            axs[1, 1].set_title('Violent Crime Rates per 100,000 inhabitants (2011–2020)')
-            axs[1, 1].set_xlabel('Year')
-            axs[1, 1].set_ylabel('Crime Rate')
+            axs[3].plot(years, crime_rates, marker='o', color=fancy_colors[2])
+            axs[3].set_title('Violent Crime Rates per 100,000 inhabitants (2011–2020)')
+            axs[3].set_xlabel('Year')
+            axs[3].set_ylabel('Crime Rate')
         else:
-            axs[1, 1].text(0.5, 0.5, 'Crime Data Not Available', ha='center', va='center')
+            axs[3].text(0.5, 0.5, 'Crime Data Not Available', ha='center', va='center')
     else:
-        axs[1, 1].text(0.5, 0.5, 'State Information Not Available', ha='center', va='center')
+        axs[3].text(0.5, 0.5, 'State Information Not Available', ha='center', va='center')
     
     plt.tight_layout()
 
@@ -171,13 +171,6 @@ with gr.Blocks() as iface:
         )
         with gr.Row():
             with gr.Column():
-                """
-                university = components.Dropdown(
-                    choices=list(college_data["UniversityName"]), 
-                    label="Select a University"
-                )
-                submit_button = components.Button()
-                """
                 gr.Interface(
                     fn=search_university,
                     outputs=gr.Image(width=800, show_label=False, show_download_button=False),  # adjust dimensions as needed
@@ -185,8 +178,6 @@ with gr.Blocks() as iface:
                         choices=list(college_data["UniversityName"]), 
                         label="Select a University"),
                     live=False,
-                    #title='Beyond the Book 🎓',
-                    #description='Visualize data related to different universities. Select a university to get started.',
                     theme='default',
                     css=custom_css,
                     allow_flagging="never"
