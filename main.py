@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 from PIL import Image
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 import openai
+from dotenv import load_dotenv
+import os
 
 # Load all the CSV files from the 'data' folder
 college_data = pd.read_csv('data/college_data.csv')
@@ -14,8 +16,8 @@ transportation_data = pd.read_csv('data/transportation.csv')
 crime_data = pd.read_csv('data/crime_data.csv')
 tuition_data = pd.read_csv('data/tution_data.csv')
 
-OPEN_AI_API_KEY = "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"
-openai.api_key = OPEN_AI_API_KEY
+load_dotenv()
+openai.api_key = os.environ.get("OPEN_AI_KEY")
 
 # Dictionary to map university names to image URLs (update with actual image URLs)
 university_images = {
